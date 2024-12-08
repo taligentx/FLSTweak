@@ -6,7 +6,7 @@ These firmware file can contain multiple images, including the bootloader image 
 ## Quick start
 Run flstweak.py with the -h option to display help with all options:
 ```
-$python3 flstweak.py -h
+$ python3 flstweak.py -h
 usage: flstweak.py [-h] [--replace] [--ref REF] [--mod MOD] [--output OUTPUT] [--extract] filename
 
 flstweak 0.1 - Parse, replace, and extract data from Winner Micro .fls firmware files.
@@ -25,7 +25,7 @@ options:
 ```
 Run flstweak.py with the firmware file to parse and display image info:
 ```
-$python3 flstweak.py hello_world.fls
+$ python3 flstweak.py hello_world.fls
 Detected firmware type: W80x
 
 Image 0:
@@ -52,11 +52,16 @@ Image 1:
   Image attributes:
   (...)
 ```
+On Linux and macOS, the following will make the script directly executable:
+```
+$ chmod +x flstweak.py
+$ ./flstweak.py hello_world.fls
+```
 
 ## Image data replacement
 The `--replace` option allows for image data replacement and requires a reference data file (with `--ref`) containing the image data to match and a modified data file (with `--mod`) of the same size. If the reference data is found, it will be replaced with the modified data and the header will be updated with the new image checksum and header checksum.
 ```
-$python3 flstweak.py hello_world.fls --replace --ref ref.bin --mod mod.bin
+$ python3 flstweak.py hello_world.fls --replace --ref ref.bin --mod mod.bin
 Detected firmware type: W80x
 
 Image 0:

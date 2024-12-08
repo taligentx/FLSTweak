@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 flstweak.py 0.1 - Parse, replace, and extract data from Winner Micro .fls firmware files.
 
