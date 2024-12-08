@@ -55,13 +55,36 @@ Image 1:
 
 ## Image data replacement
 The `--replace` option allows for image data replacement and requires a reference data file (with `--ref`) containing the image data to match and a modified data file (with `--mod`) of the same size. If the reference data is found, it will be replaced with the modified data and the header will be updated with the new image checksum and header checksum.
+```
+$python3 flstweak.py hello_world.fls --replace --ref ref.bin --mod mod.bin
+Detected firmware type: W80x
+
+Image 0:
+  (...)
+  Image checksum: original 0x7C67C28A, new 0x187EC376 (verified)
+  Header checksum: original 0x2857E698, new 0x9F17B19D (verified)
+  [Replace] Reference data found in image and replaced
+```
 
 By default, the modified firmware will be written as `filename_mod` and can be customized with the `--output` option.
+```
+[Output] Saved processed firmware as hello_world_mod.fls
+```
 
 * Note that data replacement is currently not supported for W60x-series firmware.
 
 ## Image extraction
-The images can also be extracted to individual files for analysis with the `--extract` option. Each image will be written as `filename_imageX`, with `X` as the image number.
+The images can also be extracted to individual files for analysis with the `--extract` option, including stripping the header to only include the image data. Each image is written as `filename_imageX`, with `X` as the image number. If combined with `--replace`, both the original image and the modified image will be extracted to separate files.
+```
+Image 0:
+  (...)
+  [Extract] Saved image as hello_world_image0.img
+
+Image 1:
+  (...)
+  [Replace] Reference data found in image and replaced
+  [Extract] Saved original image as hello_world_image1.img, modified image as hello_world_image1_mod.img
+```
 
 ## Release notes
 * 0.1
