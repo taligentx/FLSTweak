@@ -50,7 +50,7 @@ Image 0:
 
 Image 1:
   Image attributes:
-(...)
+  (...)
 ```
 
 ## Image data replacement
@@ -71,10 +71,12 @@ By default, the modified firmware will be written as `filename_mod` and can be c
 [Output] Saved processed firmware as hello_world_mod.fls
 ```
 
-* Note that data replacement is currently not supported for W60x-series firmware.
+* Notes
+  - The reference and mod files must contain a single block of contiguous data. The first matching data in the image will be replaced - for multiple replacements, run the same command on the produced `_mod.fls` file.
+  - Data replacement is currently not supported for W60x-series firmware.
 
 ## Image extraction
-The images can also be extracted to individual files for analysis with the `--extract` option, including stripping the header to only include the image data. Each image is written as `filename_imageX`, with `X` as the image number. If combined with `--replace`, both the original image and the modified image will be extracted to separate files.
+The images can also be extracted to individual files for analysis with the `--extract` option, including stripping the header to only include the image data. Each image is written as `filename_imageX.img`, with `X` as the image number. If combined with `--replace`, both the original image and the modified image will be extracted to separate files.
 ```
 Image 0:
   (...)
