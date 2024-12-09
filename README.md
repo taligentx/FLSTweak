@@ -1,9 +1,11 @@
 # FLSTweak
 This tool parses .fls firmware files for [Winner Micro](http://www.winnermicro.com/en/) microcontrollers, including the W60x series (W600, W601) and W80x series (W800, W801, W806). This includes decoding and presenting header information, verifying data integrity, replacing data (including updating header checksums), and extracting images to individual files for analysis.
 
-These firmware file can contain multiple images, including the bootloader image (Secboot) and the runtime user image, each with a header specifying image properties and checksums for the image and the header itself.
+For example, the [Zeeweii DSO3D12 oscilloscope](http://www.zeeweii.com/productinfo/dso3d12.html) uses the W806 chip and can be modified to improve the font quality and other UI issues. See Examples below.
 
 ## Quick start
+These firmware file can contain multiple images, including the bootloader image (Secboot) and the runtime user image, each with a header specifying image properties and checksums for the image and the header itself. See the References section below for details.
+
 Run flstweak.py with the -h option to display help with all options:
 ```
 $ python3 flstweak.py -h
@@ -93,10 +95,13 @@ Image 1:
   [Extract] Saved original image as hello_world_image1.img, modified image as hello_world_image1_mod.img
 ```
 
+## Examples
+* Zeeweii DSO3D12 - the examples directory contains mod files for new fonts and fixing the `Mea:` label. These can be used with the [firmware available from Zeeweii](http://www.zeeweii.com/support.html). Disclaimer: this is currently untested and provided for examination only. Thanks to [@timschuerewegen](https://www.eevblog.com/forum/testgear/new-2ch-pocket-dsosg-sigpeak-dso2512g/msg5124096/#msg5124096) for developing the fonts for the DSO2512G and permitting their addition to this repo!
+
 ## Release notes
 * 0.1
   - Initial release
 
 ## References
-https://doc.winnermicro.net/w800/en/latest/component_guides/firmware_format.html
-http://www.winnermicro.com/en/upload/1/editor/1559640549130.pdf
+  * W80x series firmware format: https://doc.winnermicro.net/w800/en/latest/component_guides/firmware_format.html
+  * W60x series firmware format: http://www.winnermicro.com/en/upload/1/editor/1559640549130.pdf
