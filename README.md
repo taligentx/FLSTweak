@@ -4,7 +4,7 @@ This tool parses .fls firmware files for [Winner Micro](http://www.winnermicro.c
 For example, the [Zeeweii DSO3D12 oscilloscope](http://www.zeeweii.com/productinfo/dso3d12.html) uses the W806 chip and can be modified to improve the font quality and other UI issues. See Examples below.
 
 ## Quick start
-These firmware file can contain multiple images, including the bootloader image (Secboot) and the runtime user image, each with a header specifying image properties and checksums for the image and the header itself. See the References section below for details.
+The .fls firmware file can contain multiple images, including the bootloader image (Secboot) and the runtime user image, each with a header specifying image properties and checksums for the image and the header itself. See the References section below for details.
 
 Run flstweak.py with the -h option to display help with all options:
 ```
