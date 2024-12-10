@@ -96,12 +96,12 @@ Image 1:
 ```
 
 ## Examples
-* Zeeweii DSO3D12 - the examples directory contains mod files for new fonts and fixing the `Mea:` label. These can be used with the [firmware available from Zeeweii](http://www.zeeweii.com/support.html). Disclaimer: this is currently untested and provided for examination only. Thanks to [@timschuerewegen](https://www.eevblog.com/forum/testgear/new-2ch-pocket-dsosg-sigpeak-dso2512g/msg5124096/#msg5124096) for developing the fonts for the DSO2512G and permitting their addition to this repo!
+* Zeeweii DSO3D12 - this directory contains mod files for new fonts and fixing UI typos/display bugs. These can be used with the [firmware available from Zeeweii](http://www.zeeweii.com/support.html). Disclaimer: this is currently untested and provided for examination only. Thanks to [@timschuerewegen](https://www.eevblog.com/forum/testgear/new-2ch-pocket-dsosg-sigpeak-dso2512g/msg5124096/#msg5124096) for developing the fonts for the DSO2512G and permitting their addition to this repo!
 
 ## Release notes
 * 0.1
   - Initial release
 
 ## References
-  * W80x series firmware format: https://doc.winnermicro.net/w800/en/latest/component_guides/firmware_format.html
-  * W60x series firmware format: http://www.winnermicro.com/en/upload/1/editor/1559640549130.pdf
+  * [W80x series firmware format](https://doc.winnermicro.net/w800/en/latest/component_guides/firmware_format.html)
+  * [W60x series firmware format](http://www.winnermicro.com/en/upload/1/editor/1559640549130.pdf)
