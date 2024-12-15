@@ -96,9 +96,54 @@ Image 1:
 ```
 
 ## Examples
-* Zeeweii DSO3D12 - this directory contains mod files for new fonts and fixing UI typos/display bugs. These can be used with the [firmware available from Zeeweii](http://www.zeeweii.com/support.html). Disclaimer: this is currently untested and provided for examination only. Thanks to [@timschuerewegen](https://www.eevblog.com/forum/testgear/new-2ch-pocket-dsosg-sigpeak-dso2512g/msg5124096/#msg5124096) for developing the fonts for the DSO2512G and permitting their addition to this repo!
+* Zeeweii DSO3D12 - this directory contains mod files for new fonts and fixing UI typos/display bugs. These can be used with the [firmware available from Zeeweii](http://www.zeeweii.com/support.html). Thanks to [@timschuerewegen](https://www.eevblog.com/forum/testgear/new-2ch-pocket-dsosg-sigpeak-dso2512g/msg5124096/#msg5124096) for developing the fonts for the DSO2512G and permitting their addition to this repo!
+
+  `dso3d12_v3.0.6_III_mod_v1.0.fls` is an example of modifying the original 3.0.6-III firmware:
+    - Replaced small and large fonts
+    - Fixed measurement label "Mea:"
+    - Fixed calibration text typos
+
+![Zeeweii_DSO3D12_font_mod](https://github.com/user-attachments/assets/354cf928-b812-4691-bb17-6e19b348aa0c)
+
+## Flashing - DSO3D12
+Linux/macOS:
+  1. Download and extract the [WM IoT SDK](https://doc.winnermicro.net/download/version/).
+  2. With the DSO3D12 turned off, press and hold the power button - the scope will enter a boot loop and enable the scope's serial port to allow for flashing. Keep the power button pressed until flashing is complete.
+  3. Check the name of the serial port - on macOS, use the tty.wchusbserial device:
+     ```
+     % ls /dev/tty*
+     /dev/tty.Bluetooth-Incoming-Port
+     /dev/tty.usbserial-1410  
+     /dev/tty.wchusbserial1410
+     ```
+  4. From the `wm_iot_sdk/tools/wm/` directory, run `flash.py` with the serial port and firmware:
+     ```
+     % python3 flash.py --port /dev/tty.wchusbserial1410 --image dso3d12_v3.0.6_III_mod.fls 
+     connecting serial...
+     serial connected
+     trying reset device...
+     wait serial sync...
+     serial sync success
+     trying baudrate 2000000...
+     start download image...
+     download dso3d12_v3.0.6_III_mod.fls...
+     0% [##############################] 100%
+     flash device complete
+     ```
+  5. Done! Release the power button.
+
+Windows:
+  1. Download [Upgrade Tools](http://www.isme.fun/?log=blog&id=34).
+  2. Change the language to English from the top left menu (third option).
+  3. Set "Chip" to `W80X` and set the image to the firmware .fls file.
+  4. Press and hold the scope power button to enable the serial port until flashing is complete.
+  5. Select the new COM port, click "Open Serial", and then "Download" to flash.
+  6. Done! Release the power button.
+  ![Flashing_DSO3D12_Upgrade_Tools](https://github.com/user-attachments/assets/0cf60add-3fdf-4c25-b316-f78c7475e515)
 
 ## Release notes
+* 1.0
+  - Release after successful testing on the Zeeweii DSO3D12
 * 0.1
   - Initial release
 

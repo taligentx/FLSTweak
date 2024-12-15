@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-flstweak.py 0.1 - Parse, replace, and extract data from Winner Micro .fls firmware files.
+flstweak.py 1.0 - Parse, replace, and extract data from Winner Micro .fls firmware files.
 
 Run flstweak.py with the .fls firmware filename to view information about the
 file. Run flstweak.py -h to view help and all options.
@@ -46,7 +46,7 @@ HEADER_SIZE_W80X = 64
 HEADER_SIZE_W60X = 56
 W60X_HEADER_PADDING = 200
 W60X_HEADER_PADDING_CRC = 0x947D8E12
-VERSION = str(0.1)
+VERSION = str(1.0)
 
 
 def crc32(data):
