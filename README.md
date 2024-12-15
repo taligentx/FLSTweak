@@ -108,15 +108,19 @@ Image 1:
 ## Flashing - DSO3D12
 Linux/macOS:
   1. Download and extract the [WM IoT SDK](https://doc.winnermicro.net/download/version/).
-  2. With the DSO3D12 turned off, press and hold the power button - the scope will enter a boot loop and enable the scope's serial port to allow for flashing. Keep the power button pressed until flashing is complete.
-  3. Check the name of the serial port - on macOS, use the tty.wchusbserial device:
+  2. Install required packages - from the `wm_iot_sdk` directory:
+     ```
+     python -m pip install --user -r tools/wm/requirements.txt
+     ```
+  3. With the DSO3D12 turned off, press and hold the power button - the scope will enter a boot loop and enable the scope's serial port to allow for flashing. Keep the power button pressed until flashing is complete.
+  4. Check the name of the serial port - on macOS, use the tty.wchusbserial device:
      ```
      % ls /dev/tty*
      /dev/tty.Bluetooth-Incoming-Port
      /dev/tty.usbserial-1410  
      /dev/tty.wchusbserial1410
      ```
-  4. From the `wm_iot_sdk/tools/wm/` directory, run `flash.py` with the serial port and firmware:
+  5. From the `wm_iot_sdk/tools/wm/` directory, run `flash.py` with the serial port and firmware:
      ```
      % python3 flash.py --port /dev/tty.wchusbserial1410 --image dso3d12_v3.0.6_III_mod.fls 
      connecting serial...
@@ -130,7 +134,7 @@ Linux/macOS:
      0% [##############################] 100%
      flash device complete
      ```
-  5. Done! Release the power button.
+  6. Done! Release the power button.
 
 Windows:
   1. Download [Upgrade Tools](http://www.isme.fun/?log=blog&id=34).
