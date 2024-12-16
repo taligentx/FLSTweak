@@ -98,8 +98,8 @@ Image 1:
 ## Examples
 * Zeeweii DSO3D12 - this directory contains mod files for new fonts and fixing UI typos/display bugs. These can be used with the [firmware available from Zeeweii](http://www.zeeweii.com/support.html). Thanks to [@timschuerewegen](https://www.eevblog.com/forum/testgear/new-2ch-pocket-dsosg-sigpeak-dso2512g/msg5124096/#msg5124096) for developing the fonts for the DSO2512G and permitting their addition to this repo!
 
-  `dso3d12_v3.0.6_III_mod_v1.0.fls` is an example of modifying the original 3.0.6-III firmware:
-    - Replaced small and large fonts
+  `dso3d12_v3.0.6_III_mod_v1.1.fls` is an example of modifying the original 3.0.6-III firmware:
+    - Replaced small (8x13) and large (16x16) fonts - as of v1.1, I've re-rendered the small font for a better fit to the DSO3D12.
     - Fixed measurement label "Mea:"
     - Fixed calibration text typos
 
@@ -146,6 +146,8 @@ Windows:
   ![Flashing_DSO3D12_Upgrade_Tools](https://github.com/user-attachments/assets/0cf60add-3fdf-4c25-b316-f78c7475e515)
 
 ## Release notes
+* 1.1
+  - Rendered new small font with all characters shifted down 1 pixel
 * 1.0
   - Release after successful testing on the Zeeweii DSO3D12
 * 0.1
