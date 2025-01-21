@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-flstweak.py 1.1 - Parse, replace, and extract data from Winner Micro .fls firmware files.
+flstweak.py 2.0 - Parse, replace, and extract data from Winner Micro .fls firmware files.
 
 Run flstweak.py with the .fls firmware filename to view information about the
 file. Run flstweak.py -h to view help and all options.
@@ -11,11 +11,13 @@ image properties and a checksum for both the image and the header itself.
 
 Image data replacement
 ---------------------------------------
-The --replace option allows for image data replacement and requires a reference
-data file (with --ref) containing the image data to match and a modified data file
-(with --mod) of the same size. If the reference data is found, it will be replaced
-with the modified data and the header will be updated with the new image checksum
-and header checksum.
+The --replace option allows for image data replacement by specifying a reference
+file (suffix: ref.bin) containing the image data to match or a directory containing
+multiple reference files. Each reference file should have a corresponding modified
+file (suffix: mod.bin) with the replacement data.
+
+If the reference data is found, it will be replaced with the modified data and the
+header will be updated with the new image checksum and header checksum.
 
 By default, the modified firmware will be written as filename_mod and can be
 customized with the --output option.
@@ -46,7 +48,7 @@ HEADER_SIZE_W80X = 64
 HEADER_SIZE_W60X = 56
 W60X_HEADER_PADDING = 200
 W60X_HEADER_PADDING_CRC = 0x947D8E12
-VERSION = str(1.1)
+VERSION = str(2.0)
 
 
 def crc32(data):
@@ -187,7 +189,7 @@ def print_image_info(firmware_type, header, body_len, body_checksum, replaced=Fa
         print(f"  Header checksum: 0x{hd_checksum:08X} (verified)")
 
 
-def process_image(file, firmware_type, image_number, replace, ref_data, mod_data, output_file, extract):
+def process_image(file, firmware_type, image_number, replace_target, output_file, extract):
     image_increment = 1
     if firmware_type == "W60x":
         header_size = HEADER_SIZE_W60X
@@ -255,8 +257,54 @@ def process_image(file, firmware_type, image_number, replace, ref_data, mod_data
         valid_body = True
 
     replaced = False
-    if replace and valid_body:
-        new_body, replaced = replace_data(body, ref_data, mod_data)
+    if replace_target and valid_body:
+        if os.path.isdir(replace_target):
+            ref_files = [f for f in os.listdir(replace_target) if f.endswith('ref.bin')]
+            if not ref_files:
+                raise ValueError("No reference files found in specified directory.")
+
+            replaced_files = {}
+            for ref_file in ref_files:
+                mod_file = ref_file.replace("ref.bin", "mod.bin")
+                ref_path = os.path.join(replace_target, ref_file)
+                mod_path = os.path.join(replace_target, mod_file)
+
+                if not os.path.exists(mod_path):
+                    print(f"[Warning] No matching mod file for {ref_file}, skipping.")
+                    continue
+
+                with open(ref_path, "rb") as ref_input, open(mod_path, "rb") as mod_input:
+                    ref_data, mod_data = ref_input.read(), mod_input.read()
+                    if len(ref_data) != len(mod_data):
+                        print(f"[Error] Reference and modification files must be the same size: {ref_file}")
+                        continue
+
+                if replaced:
+                    new_body, replaced = replace_data(new_body, ref_data, mod_data)
+                    replaced_files[ref_file] = replaced
+                    replaced = True
+                else:
+                    new_body, replaced = replace_data(body, ref_data, mod_data)
+                    replaced_files[ref_file] = replaced
+
+        elif os.path.isfile(replace_target) and replace_target.endswith('ref.bin'):
+            ref_filename = replace_target
+            mod_filename = replace_target.replace("ref.bin", "mod.bin")
+            if not os.path.exists(mod_filename):
+                raise ValueError(f"Matching modification file not found for {ref_filename}")
+
+            with open(ref_filename, "rb") as ref_file, open(mod_filename, "rb") as mod_file:
+                ref_data, mod_data = ref_file.read(), mod_file.read()
+
+                if len(ref_data) != len(mod_data):
+                    raise ValueError("Reference and modification files must be the same size.")
+
+            ref_name, _ = os.path.splitext(ref_filename)
+            new_body, replaced = replace_data(body, ref_data, mod_data)
+
+        else:
+            raise ValueError("Invalid replacement reference file or directory.")
+
         if replaced:
             new_org_checksum = crc32(new_body)
             new_header = list(header)
@@ -265,12 +313,18 @@ def process_image(file, firmware_type, image_number, replace, ref_data, mod_data
             output_file.write(struct.pack("<IIIIIIII16sIIII", *new_header))
             output_file.write(new_body)
             print_image_info(firmware_type, header, body_len, body_checksum, True, new_header[12], new_org_checksum)
-            print(f"  [Replace] Reference data found in image and replaced")
         else:
             output_file.write(struct.pack("<IIIIIIII16sIIII", *header))
             output_file.write(body)
             print_image_info(firmware_type, header, body_len, body_checksum, False)
-            print(f"  [Replace] Reference data not found in image")
+
+        if os.path.isdir(replace_target):
+            for replaced_item, matched in replaced_files.items():
+                ref_name, _ = os.path.splitext(replaced_item)
+                print(f"  [Replace] {'Matched and replaced' if matched else 'Not matched'}: {ref_name}")
+        else:
+            print(f"  [Replace] {'Matched and replaced' if replaced else 'Not matched'}: {ref_name}")
+
     else:
         print_image_info(firmware_type, header, body_len, body_checksum, False)
 
@@ -298,20 +352,11 @@ def parse_firmware(args):
 
             image_number = 0
             if args.replace and firmware_type != "W60x":
-                if not args.ref or not args.mod:
-                    raise ValueError("Missing parameters: specify both --ref and --mod files when using --replace")
-
-                with open(args.ref, "rb") as ref_file, open(args.mod, "rb") as mod_file:
-                    ref_data, mod_data = ref_file.read(), mod_file.read()
-
-                    if len(ref_data) != len(mod_data):
-                        raise ValueError("Reference and modified data must be of the same size.")
-
                 output_filename = args.output or f"{os.path.splitext(args.filename)[0]}_mod.fls"
                 with open(output_filename, "wb") as output_file:
                     while True:
                         try:
-                            image_number = process_image(file, firmware_type, image_number, args.replace, ref_data, mod_data, output_file, args.extract)
+                            image_number = process_image(file, firmware_type, image_number, args.replace, output_file, args.extract)
                             if not image_number:
                                 break
                         except ValueError as e:
@@ -321,7 +366,7 @@ def parse_firmware(args):
             else:
                 while True:
                     try:
-                        image_number = process_image(file, firmware_type, image_number, False, None, None, None, args.extract)
+                        image_number = process_image(file, firmware_type, image_number, None, None, args.extract)
                         if not image_number:
                             break
                     except ValueError as e:
@@ -331,15 +376,13 @@ def parse_firmware(args):
     except FileNotFoundError as e:
         print(e)
     except ValueError as e:
-        print(f"[Error]  {e}")
+        print(f"[Error] {e}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='flstweak ' + VERSION + ' - Parse, replace, and extract data from Winner Micro .fls firmware files.')
     parser.add_argument('filename', help='.fls firmware file to process')
-    parser.add_argument('--replace', action='store_true', help='replace data, requires --ref and --mod')
-    parser.add_argument('--ref', help='file containing reference data')
-    parser.add_argument('--mod', help='file containing modified data')
+    parser.add_argument('--replace', help='reference file (suffix: ref.bin) for replacement or directory for multiple replacements')
     parser.add_argument('--output', help='output file for modified firmware (default: filename_mod)')
     parser.add_argument('--extract', action='store_true', help='extracts images to individual files')
     args = parser.parse_args()
