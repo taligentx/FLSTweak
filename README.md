@@ -1,7 +1,7 @@
 # FLSTweak
 This tool parses .fls firmware files for [Winner Micro](http://www.winnermicro.com/en/) microcontrollers, including the W60x series (W600, W601) and W80x series (W800, W801, W806). This includes decoding and presenting header information, verifying data integrity, replacing data (including updating header checksums), and extracting images to individual files for analysis.
 
-For example, the [Zeeweii DSO3D12 oscilloscope](http://www.zeeweii.com/productinfo/dso3d12.html) uses the W806 chip and can be modified to improve the font quality and other UI issues. See Examples below.
+For example, the [Zeeweii DSO3D12 oscilloscope](http://www.zeeweii.com/productinfo/dso3d12.html) uses the W806 chip and can be modified to improve the font quality and other UI elements. See the [ZeeTweak](https://github.com/taligentx/ZeeTweak) repo for firmware modifications that can be applied using FLSTweak.
 
 ## Quick start
 The .fls firmware file can contain multiple images, including the bootloader image (Secboot) and the runtime user image, each with a header specifying image properties and checksums for the image and the header itself. See the References section below for details.
@@ -94,57 +94,6 @@ Image 1:
   [Replace] Matched and replaced: data_ref
   [Extract] Saved original image as hello_world_image1.img, modified image as hello_world_image1_mod.img
 ```
-
-## Examples
-* Zeeweii DSO3D12 - this directory contains mod files for new fonts and fixing UI typos/display bugs. These can be used with the [firmware available from Zeeweii](http://www.zeeweii.com/support.html). Thanks to [@timschuerewegen](https://www.eevblog.com/forum/testgear/new-2ch-pocket-dsosg-sigpeak-dso2512g/msg5124096/#msg5124096) for developing the fonts for the DSO2512G and permitting their addition to this repo!
-
-  `dso3d12_v3.0.6_III_mod_v2.0.fls` is an example of modifying the original 3.0.6-III firmware:
-    - Replaced small (8x13) and large (16x16) fonts - as of v1.1, I've re-rendered the small font for a better fit to the DSO3D12.
-    - Updated measurement labels (removes divider `:`, changed capitalization, replace `Mea` with `Avg`)
-    - Fixed DMM calibration label typos
-    - Fixed label "Normal"
-
-![Zeeweii_DSO3D12_mod_v2.0](https://github.com/user-attachments/assets/f21b143d-f933-4e98-aac6-cfb2dd442958)
-
-## Flashing - DSO3D12
-Linux/macOS:
-  1. Download and extract the [WM IoT SDK](https://doc.winnermicro.net/download/version/).
-  2. Install required packages - from the `wm_iot_sdk` directory:
-     ```
-     python -m pip install --user -r tools/wm/requirements.txt
-     ```
-  3. With the DSO3D12 turned off, press and hold the power button - the scope will enter a boot loop and enable the scope's serial port to allow for flashing. Keep the power button pressed until flashing is complete.
-  4. Check the name of the serial port - on macOS, use the tty.wchusbserial device:
-     ```
-     % ls /dev/tty*
-     /dev/tty.Bluetooth-Incoming-Port
-     /dev/tty.usbserial-1410  
-     /dev/tty.wchusbserial1410
-     ```
-  5. From the `wm_iot_sdk/tools/wm/` directory, run `flash.py` with the serial port and firmware:
-     ```
-     % python3 flash.py --port /dev/tty.wchusbserial1410 --image dso3d12_v3.0.6_III_mod.fls 
-     connecting serial...
-     serial connected
-     trying reset device...
-     wait serial sync...
-     serial sync success
-     trying baudrate 2000000...
-     start download image...
-     download dso3d12_v3.0.6_III_mod.fls...
-     0% [##############################] 100%
-     flash device complete
-     ```
-  6. Done! Release the power button.
-
-Windows:
-  1. Download [Upgrade Tools](http://www.isme.fun/?log=blog&id=34).
-  2. Change the language to English from the top left menu (third option).
-  3. Set "Chip" to `W80X` and set the image to the firmware .fls file.
-  4. Press and hold the scope power button to enable the serial port until flashing is complete.
-  5. Select the new COM port, click "Open Serial", and then "Download" to flash.
-  6. Done! Release the power button.
-  ![Flashing_DSO3D12_Upgrade_Tools](https://github.com/user-attachments/assets/0cf60add-3fdf-4c25-b316-f78c7475e515)
 
 ## Release notes
 * 2.0
